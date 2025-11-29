@@ -1,0 +1,176 @@
+Material Estimate Component — Quick Start Guide
+
+Overview
+- This document helps a new developer run the project locally for the first time.
+- Repo contains a Flutter app (root), platform folders, and a simple Python `backend` in `backend/`.
+
+1) Clone the repository
+- Using HTTPS (recommended):
+  git clone https://github.com/BMadhushan18/Material_Estimate_Component_Bawantha.git
+- Example (Windows cmd):
+  cd C:\\path\\to\\workspace
+  git clone https://github.com/BMadhushan18/Material_Estimate_Component_Bawantha.git
+
+Commands to run:
+```
+cd C:\\path\\to\\workspace
+git clone https://github.com/BMadhushan18/Material_Estimate_Component_Bawantha.git
+cd Material_Estimate_Component_Bawantha
+```
+
+2) Prerequisites
+- Flutter SDK (stable): https://flutter.dev/docs/get-started/install
+  - Add Flutter `bin` to your PATH.
+  - Verify with:
+```
+flutter doctor
+```
+- Android SDK / Android Studio (for Android builds and emulators):
+  - Ensure `ANDROID_SDK_ROOT` (or `ANDROID_HOME`) points to your SDK directory.
+  - Accept licenses (Windows cmd):
+```
+flutter doctor --android-licenses
+```
+- Java JDK (matching Android toolchain) — usually JDK 11 is OK for recent Flutter versions.
+- Xcode (macOS only) for iOS builds.
+- Python 3.8+ (for backend): https://www.python.org/downloads/
+  - Confirm Python version:
+```
+python --version
+pip --version
+```
+- Git installed and available in PATH.
+
+3) Install project dependencies
+
+Flutter app dependencies:
+```
+cd Material_Estimate_Component_Bawantha
+flutter pub get
+```
+
+Backend dependencies (Python):
+Windows (cmd) example:
+```
+cd backend
+python -m venv venv
+venv\\Scripts\\activate
+pip install -r requirements.txt
+```
+macOS / Linux example:
+```
+cd backend
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
+4) Configure Android-specific settings (if building for Android)
+
+Create or update `android\\local.properties` (Windows example):
+```
+echo sdk.dir=C:\\Users\\<YourUser>\\AppData\\Local\\Android\\sdk > android\\local.properties
+```
+Replace `<YourUser>` with your Windows username. If using Android Studio, it will generate this file automatically.
+
+5) Run the backend
+
+From repo root (Windows cmd):
+```
+cd backend
+venv\\Scripts\\activate   # if you created the venv as shown above
+python main.py
+```
+
+If the backend accepts environment variables (check `backend/main.py`), run like:
+```
+set FLASK_ENV=development
+set PORT=5000
+python main.py
+```
+(Use `export` on macOS/Linux instead of `set`.)
+
+6) Run the Flutter app
+
+List devices and emulators:
+```
+flutter devices
+```
+
+Run on default device:
+```
+flutter run
+```
+
+Run on specific device (example):
+```
+flutter run -d emulator-5554
+```
+
+Run on Windows desktop (if project supports it):
+```
+flutter run -d windows
+```
+
+If you need to point the app to your local backend (common during development), set the API base URL in the app's config or use a debug flag inside `lib/` — search for constants or environment handling in `lib/`.
+
+7) Build release artifacts
+
+Android APK (release):
+```
+flutter build apk --release
+```
+Output location: `build/app/outputs/flutter-apk/app-release.apk`.
+
+Android App Bundle (AAB):
+```
+flutter build appbundle --release
+```
+
+iOS (macOS required):
+```
+flutter build ios --release
+```
+
+Windows (desktop):
+```
+flutter build windows --release
+```
+
+8) Common troubleshooting (commands and tips)
+
+- If plugins are causing build or codegen errors:
+```
+flutter clean
+flutter pub get
+```
+- If Android SDK licenses missing:
+```
+flutter doctor --android-licenses
+```
+- If build fails and you need verbose logs:
+```
+flutter run -v
+```
+- If Gradle issues on Android, try using the wrapper from `android/`:
+```
+cd android
+gradlew.bat assembleDebug
+```
+- For Python backend errors, verify venv activation and reinstall requirements:
+```
+venv\\Scripts\\activate
+pip install -r requirements.txt --upgrade
+```
+
+9) Notes for maintainers
+- Backend is at `backend/main.py` and requirements in `backend/requirements.txt`.
+- Flutter entry point is `lib/main.dart`.
+- Platform-specific code lives in `android/`, `ios/`, `windows/`, etc.
+
+10) Next steps I can help with
+- Convert this `guide` into `GUIDE.md` (Markdown) for nicer formatting.
+- I can run `flutter pub get` and install backend requirements here if you want me to execute commands in this environment.
+
+If you'd like me to make a Markdown version or run the setup commands now, tell me which option you prefer.
+
