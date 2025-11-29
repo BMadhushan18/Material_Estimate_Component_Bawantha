@@ -1,0 +1,63 @@
+# Flutter / Dart
+.dart_tool/
+.packages
+.flutter-plugins
+.flutter-plugins-dependencies
+.build/
+build/
+pubspec.lock        # optional: keep for apps, ignore for packages
+
+# Android
+android/.gradle/
+android/app/build/
+.gradle/
+local.properties
+**/local.properties
+
+# iOS
+ios/Pods/
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+ios/Runner.xcworkspace/
+ios/Runner/GeneratedPluginRegistrant.*
+ios/Runner/Flutter/Generated.xcconfig
+
+# Windows / macOS / Linux build outputs
+windows/runner/**/Debug/
+windows/runner/**/Release/
+macos/Build/
+linux/Build/
+
+# Flutter plugin generated files
+**/generated_plugin_registrant.*
+
+# IDEs and editors
+.idea/
+*.iml
+.vscode/
+
+# Keystore / secrets
+*.jks
+*.keystore
+google-services.json
+GoogleService-Info.plist
+.env
+.env.* 
+
+# Python (backend)
+backend/__pycache__/
+backend/*.pyc
+backend/.venv/
+backend/venv/
+backend/env/
+backend/.pytest_cache/
+backend/.mypy_cache/
+backend/pip-wheel-metadata/
+backend/build/
+backend/dist/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+*.log
