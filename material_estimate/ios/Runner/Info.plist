@@ -47,5 +47,9 @@
 	<true/>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>We need microphone access to convert your speech to text</string>
+	<key>NSCameraUsageDescription</key>
+	<string>This app needs camera access to take photos for OCR</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app needs access to your photos to select an image for OCR</string>
 </dict>
 </plist>

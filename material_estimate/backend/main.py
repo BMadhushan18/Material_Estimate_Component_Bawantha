@@ -4,10 +4,12 @@ import shutil
 from typing import List
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 import pdfplumber
 from PIL import Image
 import pytesseract
 import openai
+import requests
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -18,7 +20,25 @@ if not OPENAI_API_KEY:
 
 openai.api_key = OPENAI_API_KEY
 
+# Optional Hugging Face configuration (server-side). If set, HF will be tried first.
+HF_API_KEY = os.getenv('HF_API_KEY')
+HF_MODEL = os.getenv('HF_MODEL', 'gpt2')
+
 app = FastAPI(title='Building Plan Analyzer')
+
+# Allow local app to call this API (adjust origins in production)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
+@app.get('/health')
+async def health():
+    return JSONResponse({'status': 'ok'})
 
 
 def extract_text_from_pdf(path: str) -> str:
@@ -123,3 +143,95 @@ async def analyze_plan(
             shutil.rmtree(tmpdir)
         except Exception:
             pass
+
+
+from pydantic import BaseModel
+
+
+class ChatRequest(BaseModel):
+    message: str
+
+
+@app.post('/chat')
+async def chat_endpoint(req: ChatRequest):
+    """Simple chat proxy endpoint.
+
+    Tries Hugging Face Inference API first (if HF_API_KEY or public model available).
+    Falls back to OpenAI if configured.
+    Returns JSON: {"reply": "..."}
+    """
+    msg = req.message
+
+    # Try Hugging Face Inference API
+    if HF_MODEL:
+        try:
+            hf_url = f'https://api-inference.huggingface.co/models/{HF_MODEL}'
+            headers = {'Content-Type': 'application/json'}
+            if HF_API_KEY:
+                headers['Authorization'] = f'Bearer {HF_API_KEY}'
+
+            payload = {'inputs': msg, 'options': {'wait_for_model': True}}
+            hf_res = requests.post(hf_url, headers=headers, json=payload, timeout=30)
+            if hf_res.status_code == 200:
+                try:
+                    parsed = hf_res.json()
+                    # HF may return a list or dict with generated_text
+                    if isinstance(parsed, list) and len(parsed) > 0:
+                        first = parsed[0]
+                        if isinstance(first, dict) and 'generated_text' in first:
+                            reply = first['generated_text']
+                        else:
+                            reply = str(parsed[0])
+                    elif isinstance(parsed, dict) and 'generated_text' in parsed:
+                        reply = parsed['generated_text']
+                    else:
+                        reply = hf_res.text
+                except Exception:
+                    reply = hf_res.text
+                return JSONResponse({'reply': reply})
+            # If HF gave an auth or server error, continue to fallback
+        except Exception as e:
+            # log but continue
+            print('HF request failed:', e)
+
+    # Fallback to OpenAI
+    if not OPENAI_API_KEY:
+        raise HTTPException(status_code=500, detail='No AI provider configured on server')
+
+    try:
+        # Prefer Chat Completions if available
+        try:
+            resp = openai.chat.completions.create(
+                model='gpt-3.5-turbo',
+                messages=[{'role': 'user', 'content': msg}],
+                temperature=0.7,
+                max_tokens=512,
+            )
+            # new api returns choices[0].message.content
+            text = ''
+            if hasattr(resp, 'choices') and len(resp.choices) > 0:
+                # try to access new style
+                try:
+                    text = resp.choices[0].message.content
+                except Exception:
+                    text = str(resp.choices[0])
+        except Exception:
+            # fallback to older completions
+            resp = openai.Completion.create(model='text-davinci-003', prompt=msg, max_tokens=512, temperature=0.7)
+            text = resp.choices[0].text
+
+        return JSONResponse({'reply': text})
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f'OpenAI request failed: {e}')
+
+
+    if __name__ == '__main__':
+        # Allow running directly: read HOST/PORT from env or default to 0.0.0.0:8000
+        host = os.getenv('HOST', '0.0.0.0')
+        port = int(os.getenv('PORT', '8000'))
+        try:
+            import uvicorn
+
+            uvicorn.run('main:app', host=host, port=port, reload=False)
+        except Exception as e:
+            print('Failed to start uvicorn:', e)
