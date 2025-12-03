@@ -171,8 +171,9 @@ class _SignupPageState extends State<SignupPage> {
                         obscureText: true,
                         validator: (v) {
                           if (v == null || v.isEmpty) return 'Confirm password';
-                          if (v != _passCtrl.text)
+                          if (v != _passCtrl.text) {
                             return 'Passwords do not match';
+                          }
                           return null;
                         },
                       ),

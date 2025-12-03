@@ -4,6 +4,13 @@
     <!-- Optional storage permission for older Android versions (pre-scoped storage). -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    
+    <!-- AR features -->
+    <uses-feature android:name="android.hardware.camera.ar" android:required="true"/>
+    <uses-permission android:name="android.permission.CAMERA" />
+    
+    <!-- ARCore requires OpenGL ES 3.0 or later. -->
+    <uses-feature android:glEsVersion="0x00030000" android:required="true" />
     <application
         android:label="material_estimate"
         android:name="${applicationName}"
@@ -35,6 +42,9 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+            
+        <!-- ARCore metadata -->
+        <meta-data android:name="com.google.ar.core" android:value="required" />
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and

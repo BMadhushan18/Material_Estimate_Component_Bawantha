@@ -24,6 +24,12 @@ import 'auth/signup_page.dart';
 import 'auth/forgot_password_page.dart';
 import 'auth/auth_service.dart';
 import 'utils/config.dart';
+import 'screens/input_wizard_screen.dart';
+import 'screens/boq_display_screen.dart';
+import 'screens/model_3d_viewer_screen.dart';
+import 'screens/ar_camera_screen.dart';
+import 'screens/voice_to_plan_screen.dart';
+import 'screens/stereo_vision_calibration_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -248,7 +254,7 @@ class _Plan2Dto3DPageState extends State<Plan2Dto3DPage> {
               const SizedBox(height: 8),
               Expanded(
                 child: ModelViewer(
-                  src: 'file://${_modelLocalPath}',
+                  src: 'file://$_modelLocalPath',
                   alt: 'Converted plan model',
                   autoRotate: true,
                   cameraControls: true,
@@ -324,6 +330,8 @@ class MyApp extends StatelessWidget {
         '/signup': (ctx) => const SignupPage(),
         '/forgot': (ctx) => const ForgotPasswordPage(),
         '/home': (ctx) => const MyHomePage(title: 'Material Estimate'),
+        '/input-wizard': (ctx) => const InputWizardScreen(),
+        '/model-viewer': (ctx) => const Model3DViewerScreen(),
       },
     );
   }
@@ -2350,7 +2358,8 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       drawer: Drawer(
-        child: Column(
+        child: ListView(
+          padding: EdgeInsets.zero,
           children: [
             DrawerHeader(
               decoration: BoxDecoration(
@@ -2387,6 +2396,15 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             ListTile(
+              leading: const Icon(Icons.analytics),
+              title: const Text('Multi-Modal BOQ'),
+              subtitle: const Text('AI-Powered Analysis'),
+              onTap: () {
+                Navigator.of(context).pop(); // Close drawer
+                Navigator.pushNamed(context, '/input-wizard');
+              },
+            ),
+            ListTile(
               leading: const Icon(Icons.map),
               title: const Text('Building Plan'),
               onTap: () => Navigator.of(context).push(
@@ -2408,6 +2426,28 @@ class _MyHomePageState extends State<MyHomePage> {
                   builder: (_) => const WoodIdentificationPage(),
                 ),
               ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.camera_enhance),
+              title: const Text('AR Camera'),
+              subtitle: const Text('AR Detection & Measurement'),
+              onTap: () {
+                Navigator.of(context).pop(); // Close drawer
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const ARCameraScreen()),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.record_voice_over),
+              title: const Text('VoiceToPlan'),
+              subtitle: const Text('Voice to 3D Building Model'),
+              onTap: () {
+                Navigator.of(context).pop(); // Close drawer
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const VoiceToPlanScreen()),
+                );
+              },
             ),
             ListTile(
               leading: const Icon(Icons.precision_manufacturing),
@@ -2432,7 +2472,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 context,
               ).push(MaterialPageRoute(builder: (_) => const OCRPage())),
             ),
-            const Spacer(),
             ListTile(
               leading: const Icon(Icons.logout),
               title: const Text('Logout'),
@@ -2534,6 +2573,32 @@ class _MyHomePageState extends State<MyHomePage> {
               onTap: () => Navigator.of(
                 context,
               ).push(MaterialPageRoute(builder: (_) => const AiChatScreen())),
+            ),
+            _DashboardCard(
+              icon: Icons.camera_enhance,
+              title: 'AR',
+              color: Colors.deepPurple,
+              onTap: () => Navigator.of(
+                context,
+              ).push(MaterialPageRoute(builder: (_) => const ARCameraScreen())),
+            ),
+            _DashboardCard(
+              icon: Icons.record_voice_over,
+              title: 'VoiceToPlan',
+              color: Colors.orange,
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const VoiceToPlanScreen()),
+              ),
+            ),
+            _DashboardCard(
+              icon: Icons.visibility,
+              title: 'Stereo Vision',
+              color: Colors.blueGrey,
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => const StereoVisionCalibrationScreen(),
+                ),
+              ),
             ),
           ],
         ),

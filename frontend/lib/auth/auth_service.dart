@@ -60,8 +60,9 @@ class AuthService {
       if (res.statusCode == 200) {
         final body = data['body'];
         String? token;
-        if (body is Map && body['token'] != null)
+        if (body is Map && body['token'] != null) {
           token = body['token'].toString();
+        }
         if (token != null) {
           final prefs = await SharedPreferences.getInstance();
           await prefs.setString('auth_token', token);

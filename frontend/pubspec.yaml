@@ -49,6 +49,46 @@ dependencies:
   share_plus: ^12.0.1
   model_viewer_plus: ^1.0.3
   path_provider: ^2.0.15
+  
+  # Camera functionality for AR
+  camera: ^0.11.0+2
+  
+  # Sensors for AR tracking
+  sensors_plus: ^5.0.1
+  
+
+  
+  # Vector math for 3D calculations
+  vector_math: ^2.1.4
+  
+  # 3D visualization
+  flutter_cube: ^0.1.1
+  
+  # Charts for BOQ visualization
+  fl_chart: ^0.70.1
+  
+  # PDF generation and export
+  pdf: ^3.11.1
+  printing: ^5.13.4
+  
+  # State management
+  provider: ^6.1.2
+  
+  # Audio recording for voice input - Temporarily removed due to build issues
+  # record: ^6.1.2
+  # audioplayers: ^6.1.0
+  
+  # Image processing
+  image: ^4.2.0
+  
+  # JSON serialization
+  json_annotation: ^4.9.0
+  
+  # Local database
+  sqflite: ^2.3.3+2
+  
+  # Intl for date formatting
+  intl: ^0.19.0
 
 dev_dependencies:
   flutter_test:
