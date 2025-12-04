@@ -20,6 +20,7 @@ This system uses AI and computer vision to analyze building structures through m
 - Outlier detection using statistical z-scores
 - Validates against Sri Lankan construction standards
 
+### update
 ### 3. BOQ Generation
 Automatically calculates material quantities for:
 - **Paint**: Coverage rate 12 sqm/liter × 2 coats + 5% wastage
